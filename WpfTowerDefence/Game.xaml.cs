@@ -20,6 +20,8 @@ namespace WpfTowerDefence
     /// </summary>
     public partial class Game : Window
     {
+        Window startWindow;
+
         int fieldHeight = 6, fieldWight = 9;
         List<Cell> wayPoints = new List<Cell>();
         Cell firstCell;
@@ -37,8 +39,9 @@ namespace WpfTowerDefence
         "000000000",
     };
 
-        public Game()
+        public Game(Window startWindow)
         {
+            this.startWindow = startWindow;
             InitializeComponent();
         }
 
@@ -46,6 +49,22 @@ namespace WpfTowerDefence
         {
             CreateLevel();
             LoadWaypoints();
+            Enemy enemy = new Enemy(wayPoints, CanvasMap);
+            //Task.Run(() =>
+            //{
+            Dispatcher.Invoke((Action)(() =>
+            {
+                for (var iteration = 0; iteration < 10; iteration++)
+                {
+                    enemy.Update();
+                    Debug.WriteLine("Trashhh!");
+                }
+            }));
+            /*  this.Dispatcher.Invoke((Action)(() =>
+              {
+                  Canvas.SetLeft(enemy, enemy.wayPoints[0].X);
+              }));
+          });*/
 
         }
 
@@ -65,10 +84,12 @@ namespace WpfTowerDefence
         {
             int x0 = 10, y0 = 10;
 
-            Button cellButton = CreateButton(new Point(x0 + (x * 50), y0 + (y * 50)), color);
-            CanvasMap.Children.Insert(0, cellButton);
+            Point cellPos = new Point(x0 + (x * 50), y0 + (y * 50));
+            Button cellButton = CreateButton(cellPos, color);
+            CanvasMap.Children.Insert(x + y, cellButton);
 
-            Cell cell = new Cell(cellButton);
+            Cell cell = new Cell(cellButton, cellPos.X, cellPos.Y);
+
             cell.SetState(GroundIndex);
 
             if (!cell.isGround && firstCell == null)
@@ -79,6 +100,11 @@ namespace WpfTowerDefence
             }
 
             allCells[y, x] = cell;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            startWindow.Visibility = Visibility.Visible;
         }
 
         private Button CreateButton(Point point, Brush brush)
@@ -115,14 +141,14 @@ namespace WpfTowerDefence
                     currWayX++;
                     Debug.WriteLine("Next Cell is Right");
                 }
-                else if(currWayY > 0 && !allCells[currWayY - 1, currWayX].isGround &&
+                else if (currWayY > 0 && !allCells[currWayY - 1, currWayX].isGround &&
                     !wayPoints.Exists(x => x == allCells[currWayY - 1, currWayX]))
                 {
                     currWayGo = allCells[currWayY - 1, currWayX];
                     currWayY--;
                     Debug.WriteLine("Next Cell is Up");
                 }
-                else if(currWayY < (fieldHeight - 1) && !allCells[currWayY + 1, currWayX].isGround &&
+                else if (currWayY < (fieldHeight - 1) && !allCells[currWayY + 1, currWayX].isGround &&
                     !wayPoints.Exists(x => x == allCells[currWayY + 1, currWayX]))
                 {
                     currWayGo = allCells[currWayY + 1, currWayX];
@@ -139,7 +165,7 @@ namespace WpfTowerDefence
             }
         }
 
-        
+
 
     }
 }

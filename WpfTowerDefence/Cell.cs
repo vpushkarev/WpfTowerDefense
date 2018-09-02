@@ -9,15 +9,22 @@ namespace WpfTowerDefence
 {
     class Cell : UserControl
     {
-        //List<Button> cells { set; get; }
-        Button cell;
+        public double X { get; set; }
+        public double Y { get;set;}
+        //public double Width { get; set; }
+        //public double Height { get; set; }
+        //public System.Windows.Media.Color Color { get; set; }
+
+        public Button cellButton;
         public int state;
 
         public bool isGround => state == 0;
 
-        public Cell(Button cell)
+        public Cell(Button cell, double x, double y)
         {
-            this.cell = cell;
+            cellButton = cell;
+            X = x;
+            Y = y;
         }
 
         public void SetState(int i)

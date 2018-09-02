@@ -27,9 +27,9 @@ namespace WpfTowerDefence
 
         private void startButton_Click(object sender, RoutedEventArgs e)
         {
-            Game taskWindow = new Game();
-            taskWindow.Show();
-            Hide();
+            Game GameWindow = new Game(this);
+            GameWindow.Show();
+            this.Visibility = Visibility.Hidden;
         }
 
         private void restartButton_Click(object sender, RoutedEventArgs e)
