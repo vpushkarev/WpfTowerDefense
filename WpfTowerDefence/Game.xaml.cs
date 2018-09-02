@@ -50,7 +50,7 @@ namespace WpfTowerDefence
             CreateLevel();
             LoadWaypoints();
             Enemy enemy = new Enemy(wayPoints, CanvasMap);
-            //Task.Run(() =>
+            //Task.Run(()  =>
             //{
             Dispatcher.Invoke((Action)(() =>
             {
